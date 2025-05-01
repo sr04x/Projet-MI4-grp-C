@@ -7,6 +7,9 @@ int main() {
     
     initialiserGrille(grille);
     afficherGrille(grille);
-
+    int nblignesuppr = supprimerLignesCompletes(grille);
+    if (nblignesuppr > 0) {
+        printf("%d ligne(s) supprimée(s) !\n", nblignesuppr);
+    }
     return 0;
 }
