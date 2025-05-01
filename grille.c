@@ -26,3 +26,31 @@ void afficherGrille(char grille[NB_LIGNES][NB_COLONNES]) {
         printf("|\n");
     }
 }
+
+
+int supprimerLignesCompletes(char grille[NB_LIGNES][NB_COLONNES]) {
+    int lignesSupprimees = 0;
+    for (int i = NB_LIGNES - 1; i >= 0; i--) {
+        int lignePleine = 1;
+        for (int j = 0; j < NB_COLONNES; j++) { // Vérifie si la ligne est pleine
+            if (grille[i][j] == VIDE) {
+                lignePleine = 0;
+                break;
+            }
+        }
+        // Si la ligne est pleine, on la supprime
+        if (lignePleine) {
+            lignesSupprimees++;
+            for (int k = i; k > 0; k--) {// Décale toutes les lignes au-dessus vers le bas
+                for (int j = 0; j < NB_COLONNES; j++) {
+                    grille[k][j] = grille[k - 1][j];
+                }
+            }
+            for (int j = 0; j < NB_COLONNES; j++) { // Vide la première ligne
+                grille[0][j] = VIDE;
+            }
+            i++;// Important : revérifier la même ligne (car elle a changé)
+        }
+    }
+    return lignesSupprimees;
+}
