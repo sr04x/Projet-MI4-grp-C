@@ -9,5 +9,7 @@
 
 void initialiserGrille(char grille[NB_LIGNES][NB_COLONNES]);
 void afficherGrille(char grille[NB_LIGNES][NB_COLONNES]);
+int supprimerLignesCompletes(char grille[NB_LIGNES][NB_COLONNES]);
+
 
 #endif
