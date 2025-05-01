@@ -5,8 +5,8 @@
 #define taille_piece 5
 #define taille_nom 50
 
-typedef struct{
-char forme  [taille_piece][taille_piece];
+typedef struct{ //structure d'une pièce Tetris
 char nom [taille_nom];
+char forme  [taille_piece][taille_piece];
 }Piece; 
 
