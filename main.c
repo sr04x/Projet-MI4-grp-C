@@ -7,9 +7,9 @@ int main() {
     
     initialiserGrille(grille);
     afficherGrille(grille);
-    int nblignesuppr = supprimerLignesCompletes(grille);
-    if (nblignesuppr > 0) {
-        printf("%d ligne(s) supprimée(s) !\n", nblignesuppr);
+    int nbLigneSuppr = supprimerLignesCompletes(grille);
+    if (nbLigneSuppr > 0) {
+        printf("%d ligne(s) supprimée(s) !\n", nbLigneSuppr);
     }
     return 0;
 }
