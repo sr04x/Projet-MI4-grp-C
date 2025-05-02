@@ -16,8 +16,11 @@ int main() {
 
     char nom[NOM_MAX];
     printf("Entrez votre nom :");
-    scanf("%s", nom); //ajouter securiter scanf
-
+    scanf("%s", nom); 
+    if (scanf("49%s", nom) != 1){
+        fprintf(stderr, "Erreur de lecture du nom.\n);
+        return 1; //quitte le programme si erreur
+    }
     ajouterScore(nom,score);
     afficherScore();
     
