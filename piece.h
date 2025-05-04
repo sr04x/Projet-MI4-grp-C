@@ -5,8 +5,12 @@
 #define taille_piece 5
 #define taille_nom 50
 
-typedef struct{ //structure d'une pièce Tetris
-char nom [taille_nom];
-char forme  [taille_piece][taille_piece];
-}Piece; 
+
+typedef struct {
+    char nom;
+    char forme[taille_piece][taille_piece * 4 + 1]; // 4 octets max par caractère (emoji)
+} Piece;
+
+void lire_piece(char* nom_fichier, Piece* piece);
+void tourner_piece(Piece* piece);
 
