@@ -1,27 +1,40 @@
+//piece.c
+#include <string.h>
 #include "piece.h"
 
-void lire_piece(char* nom_fichier,Piece* piece){
-  FILE* fichier= fopen ("style_piece.txt","r"); // r = read
-  if (fichier==NULL){ //test ouverture du fichier
-    printf("erreur dans la lecture du fichier\n");
-  return 0;
-  }
+void lire_piece(char* nom_fichier, Piece* piece) {
+    FILE* fichier = fopen(nom_fichier, "r");
+    if (fichier == NULL) {
+        printf("Erreur lors de l'ouverture du fichier %s\n", nom_fichier);
+        return;
+    }
 
-//lecture du nom de la pièce
-fget(piece->nom,taille_nom, fichier);
+    piece->nom = fgetc(fichier);
+    fgetc(fichier); // Lire le saut de ligne
 
-for(int i=0; i<taille_piece,i++){
-  if (fget(piece->forme,taille_piece, fichier)!=NULL){
-  //lecture de la ligne i du fichier texte + verif
-   for(int j=0, j<taille_piece,j++){ //associe chaque          caractère du fichier à une colonne du tab de la struc
-      Piece->forme[i][j]= Piece->forme[j];
-   }
-  }else{
-    printf("erreur dans la lecture de la ligne %d\n",i);
+    for (int i = 0; i < taille_piece; i++) {
+        fgets(piece->forme[i], max_taille, fichier);
+
+        // Supprimer le '\n' final
+        int len = strlen(piece->forme[i]);
+        if (len > 0 && piece->forme[i][len - 1] == '\n') {
+            piece->forme[i][len - 1] = '\0';
+        }
+    }
+
     fclose(fichier);
-    return 0;
+}
+
+void tourner_piece(Piece* piece){
+ char nouvelle_forme[taille_piece][taille_piece * 4 + 1];
+ for (int i = 0; i < taille_piece; i++) {
+  nouvelle_forme[i][0] = '\0';
+  for (int j = taille_piece - 1; j >= 0; j--){
+    char bloc[5] = {0}; // 4 + '\0'
+if ((i * 4 + 3) < strlen(piece->forme[j])) {
+    strncpy(bloc, &piece->forme[j][i * 4], 4);
+}
+strncat(nouvelle_forme[i], bloc, 4);
   }
 }
-fclose(fichier);
-return 1;
 }

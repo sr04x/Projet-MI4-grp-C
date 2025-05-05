@@ -1,20 +1,15 @@
+//main_test_piece.c
 #include <stdio.h>
-#include "pieces.h"
-#include "piece.c"
-
-void afficher_piece(Piece* p) {
-    printf("Nom de la pièce : %s\n", p->nom);
-    for (int i = 0; i < TAILLE_PIECE; i++) {
-        for (int j = 0; j < TAILLE_PIECE; j++) {
-            printf("%c", p->forme[i][j]);
-        }
-        printf("\n");
-    }
-}
+#include "piece.h"
 
 int main() {
     Piece p;
-    lire_piece("style_piece/L_piece.txt", &p);
-    afficher_piece(&p);
+    char* nom_fichier= "style_piece/L_piece.txt";
+    lire_piece(nom_fichier, &p);
+
+    printf("Nom de la pièce : %c\n", p.nom);
+    for (int i = 0; i < taille_piece; i++) {
+        printf("%s\n", p.forme[i]);
+    }
     return 0;
 }
