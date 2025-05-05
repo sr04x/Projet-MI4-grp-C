@@ -13,7 +13,7 @@ void lire_piece(char* nom_fichier, Piece* piece) {
     fgetc(fichier); // Lire le saut de ligne
 
     for (int i = 0; i < taille_piece; i++) {
-        fgets(piece->forme[i], max_taille, fichier);
+        fgets(piece->forme[i], 32 , fichier);
 
         // Supprimer le '\n' final
         int len = strlen(piece->forme[i]);
@@ -25,16 +25,26 @@ void lire_piece(char* nom_fichier, Piece* piece) {
     fclose(fichier);
 }
 
-void tourner_piece(Piece* piece){
- char nouvelle_forme[taille_piece][taille_piece * 4 + 1];
- for (int i = 0; i < taille_piece; i++) {
-  nouvelle_forme[i][0] = '\0';
-  for (int j = taille_piece - 1; j >= 0; j--){
-    char bloc[5] = {0}; // 4 + '\0'
-if ((i * 4 + 3) < strlen(piece->forme[j])) {
-    strncpy(bloc, &piece->forme[j][i * 4], 4);
+void tourner_piece(Piece* piece) {
+ char tmp[taille_piece][taille_piece * max_octets_par_case];
+
+    for (int i = 0; i < taille_piece; i++) {
+        for (int j = 0; j < taille_piece; j++) {
+            // Copie 4 octets (emoji) ou 1 octet (.)
+            char* src = &piece->forme[taille_piece - 1 - j][i * 4];
+            strncpy(&tmp[i][j * 4], src, 4);
+            tmp[i][j * 4 + 4] = '\0';  // null-terminate
+        }
+    }
+
+    for (int i = 0; i < taille_piece; i++) {
+        strncpy(piece->forme[i], tmp[i], sizeof(piece->forme[i]));
+    }
 }
-strncat(nouvelle_forme[i], bloc, 4);
-  }
-}
+
+void tourner_n_fois(Piece* piece, int n) {
+    int rotations = n % 4;
+    for (int i = 0; i < rotations; i++) {
+        tourner_piece(piece);
+    }
 }
