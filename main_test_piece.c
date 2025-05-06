@@ -5,7 +5,9 @@
 void afficher_piece(Piece* p){
     printf("Nom de la pièce : %c\n", p->nom);
     for (int i = 0; i < taille_piece; i++) {
-        printf("%s\n", p->forme[i]);
+        for (int j = 0; j < taille_piece; j++) {
+            printf("%s", p->forme[i][j]);
+        }
     }
 }
 

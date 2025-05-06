@@ -26,21 +26,19 @@ void lire_piece(char* nom_fichier, Piece* piece) {
 }
 
 void tourner_piece(Piece* piece) {
- char tmp[taille_piece][taille_piece * max_octets_par_case];
-
+    char tmp[taille_piece][taille_piece][5];
     for (int i = 0; i < taille_piece; i++) {
         for (int j = 0; j < taille_piece; j++) {
-            // Copie 4 octets (emoji) ou 1 octet (.)
-            char* src = &piece->forme[taille_piece - 1 - j][i * 4];
-            strncpy(&tmp[i][j * 4], src, 4);
-            tmp[i][j * 4 + 4] = '\0';  // null-terminate
+            strcpy(tmp[i][j], piece->forme[taille_piece - j - 1][i]);
         }
     }
-
     for (int i = 0; i < taille_piece; i++) {
-        strncpy(piece->forme[i], tmp[i], sizeof(piece->forme[i]));
+        for (int j = 0; j < taille_piece; j++) {
+            strcpy(piece->forme[i][j], tmp[i][j]);
+        }
     }
 }
+
 
 void tourner_n_fois(Piece* piece, int n) {
     int rotations = n % 4;

@@ -5,10 +5,11 @@
 
 #define taille_piece 5
 #define max_octets_par_case 5
+#define max_taille 100
 
 typedef struct {
     char nom;
-    char forme[taille_piece][taille_piece* max_octets_par_case];
+    char forme[taille_piece][taille_piece][5];
 }Piece;
 
 void lire_piece(char* nom_fichier, Piece* piece);
