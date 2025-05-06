@@ -1,28 +1,44 @@
 #include <stdio.h>
+#include <string.h>
 #include "grille.h"
-#include "piece.h"
 #include "score.h"
 
 int main() {
-    char grille[NB_LIGNES][NB_COLONNES];
+    char nom[NOM_MAX];
+    int score = 0;  // Score initialisé à 0
+
+    //Saisie sécurisée du nom 
+    printf("Entrez votre nom : ");
+    if (fgets(nom, NOM_MAX, stdin) == NULL) {
+        fprintf(stderr, "Erreur de lecture du nom.\n");
+        return 1;
+    }
+    //Nettoie le '\n' à la fin de la ligne si présent
+    nom[strcspn(nom, "\n")] = '\0';
+
+    printf("\nBienvenue %s! Prépare-toi à jouer à Tech-tris!\n\n", nom);
     
+    //Initialisation et affichage de la grille
+    int grille[NB_LIGNES][NB_COLONNES];
     initialiserGrille(grille);
     afficherGrille(grille);
-    int nbLigneSuppr = supprimerLignesCompletes(grille);
-    if (nbLigneSuppr > 0) {
-        printf("%d ligne(s) supprimée(s) !\n", nbLigneSuppr);
-    }
-    score += nbLigneSuppr * 100; //100 points par ligne supprime
 
-    char nom[NOM_MAX];
-    printf("Entrez votre nom :");
-    scanf("%s", nom); 
-    if (scanf("49%s", nom) != 1){
-        fprintf(stderr, "Erreur de lecture du nom.\n);
-        return 1; //quitte le programme si erreur
-    }
-    ajouterScore(nom,score);
-    afficherScore();
+    //Simulation de suppression de lignes et score(exemple)
+    int nblignesuppr = 2; //Supposons que 2 lignes ont été supprimées
+    score += nblignesuppr * 100;
     
+    // ------------code mit de cote pour exemple ----------------
+    //int nbLigneSuppr = supprimerLignesCompletes(grille);
+    //if (nbLigneSuppr > 0) {
+       // printf("%d ligne(s) supprimée(s) !\n", nbLigneSuppr);
+    //}
+    //score += nbLigneSuppr * 100; //100 points par ligne supprime
+
+    //ici plus tard la boucle principale du jeu avec les pièces etc
+
+    //Affichage et sauvegarde du score
+    printf("\nPartie terminée ! Score final : %d\n", score);
+    sauvegarderScore(nom, score);  //Enregistre le score dans scores.txt
+    afficherScores();               //Affiche les scores du fichier
     return 0;
 }
