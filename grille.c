@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include <stdio.h>   // ajouter commentaires
 #include "grille.h"
 
-void initialiserGrille(char grille[NB_LIGNES][NB_COLONNES]) {
+void initialiserGrille(int grille[NB_LIGNES][NB_COLONNES]) {
     for (int i = 0; i < NB_LIGNES; i++) {
         for (int j = 0; j < NB_COLONNES; j++) {
             grille[i][j] = VIDE;
@@ -9,7 +9,7 @@ void initialiserGrille(char grille[NB_LIGNES][NB_COLONNES]) {
     }
 }
 
-void afficherGrille(char grille[NB_LIGNES][NB_COLONNES]) {
+void afficherGrille(int grille[NB_LIGNES][NB_COLONNES]) {
     // En-tête
     printf("Voici votre grille :\n  ");
     for (int col = 0; col < NB_COLONNES; col++) {
@@ -28,7 +28,7 @@ void afficherGrille(char grille[NB_LIGNES][NB_COLONNES]) {
 }
 
 
-int supprimerLignesCompletes(char grille[NB_LIGNES][NB_COLONNES]) {
+int supprimerLignesCompletes(int grille[NB_LIGNES][NB_COLONNES]) {
     int lignesSupprimees = 0;
     for (int i = NB_LIGNES - 1; i >= 0; i--) {
         int lignePleine = 1;
