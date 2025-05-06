@@ -3,8 +3,8 @@
 #define NOM_MAX 50
 #define FICHIERS_SCORES "scores.txt"
 
-void ajouterScores();
-void afficherScores;
+void afficherScores();
+void sauvegarderScore(const char *nom, int score);
 
 
 
