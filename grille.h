@@ -7,9 +7,9 @@
 #define VIDE ' '
 //#define BLOC '@'  // Utilisé pour les blocs affichés dans la grille à changer avec les nouvelles pièces
 
-void initialiserGrille(char grille[NB_LIGNES][NB_COLONNES]);
-void afficherGrille(char grille[NB_LIGNES][NB_COLONNES]);
-int supprimerLignesCompletes(char grille[NB_LIGNES][NB_COLONNES]);
+void initialiserGrille(int grille[NB_LIGNES][NB_COLONNES]);
+void afficherGrille(int grille[NB_LIGNES][NB_COLONNES]);
+int supprimerLignesCompletes(int grille[NB_LIGNES][NB_COLONNES]);
 
 
 #endif
