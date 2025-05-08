@@ -1,5 +1,45 @@
 //main_test_piece.c
+
 #include <stdio.h>
+#include "piece.h"
+
+void afficher_piece(Piece* piece) {
+    for (int i = 0; i < taille_piece; i++) {
+        for (int j = 0; j < taille_piece; j++) {
+            printf("%s", piece->forme[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void rotation_90_anti_horaire(Piece* piece, Piece* resultat) {
+    resultat->nom = piece->nom;
+    for (int i = 0; i < taille_piece; i++) {
+        for (int j = 0; j < taille_piece; j++) {
+            strcpy(resultat->forme[taille_piece - 1 - j][i], piece->forme[i][j]);
+        }
+    }
+}
+
+int main() {
+    Piece p;
+    lire_piece("style_piece/L_piece.txt", &p);
+
+    printf("=== Pièce d'origine ===\n");
+    afficher_piece(&p);
+
+    Piece p_rot;
+    rotation_90_anti_horaire(&p, &p_rot);
+
+    printf("=== Pièce après rotation antihoraire ===\n");
+    afficher_piece(&p_rot);
+
+    return 0;
+}
+
+
+/*#include <stdio.h>
 #include "piece.h"
 
 void afficher_piece(Piece* p){
@@ -24,4 +64,4 @@ int main() {
     }
 
     return 0;
-}
+}*/
