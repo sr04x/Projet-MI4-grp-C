@@ -19,8 +19,10 @@ void lire_piece(char* nom_fichier, Piece* piece);
 void afficher_piece(Piece* piece);
 
 // Fait une rotation à 90° dans le sens antihoraire
-void rotation_90_anti_horaire(Piece* original, Piece* resultat);
+Piece rotation_90_antihoraire(Piece* original, Piece* resultat);
 
+// Fait nb_rotations rotations antihoraires (0 à 3)
+Piece rotation_piece_multiple(Piece* piece, int nb_rotations);
 
 /*void tourner_piece(Piece* piece);
 void tourner_n_fois(Piece* piece, int n);*/

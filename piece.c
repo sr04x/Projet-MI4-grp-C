@@ -2,29 +2,6 @@
 #include <string.h>
 #include "piece.h"
 
-/*void lire_piece(char* nom_fichier, Piece* piece) {
-    FILE* fichier = fopen(nom_fichier, "r");
-    if (fichier == NULL) {
-        printf("Erreur lors de l'ouverture du fichier %s\n", nom_fichier);
-        return;
-    }
-
-    piece->nom = fgetc(fichier);
-    fgetc(fichier); // Lire le saut de ligne
-
-    for (int i = 0; i < taille_piece; i++) {
-        fgets(piece->forme[i], 32 , fichier);
-
-        // Supprimer le '\n' final
-        int len = strlen(piece->forme[i]);
-        if (len > 0 && piece->forme[i][len - 1] == '\n') {
-            piece->forme[i][len - 1] = '\0';
-        }
-    }
-
-    fclose(fichier);
-}*/
-
 void lire_piece(char* nom_fichier, Piece* piece) {
     FILE* fichier = fopen(nom_fichier, "r");
     if (fichier == NULL) {
@@ -87,6 +64,26 @@ Piece rotation_piece( Piece* piece) {
     return result;
 }
 
+Piece rotation_piece_multiple(Piece* piece, int nb_rotations) {
+    Piece temp1 = *piece;
+    Piece temp2;
+
+    nb_rotations = (nb_rotations % 4 + 4) % 4; // normalise entre 0 et 3
+
+    for (int i = 0; i < nb_rotations; i++) {
+        temp2 = rotation_piece(&temp1);  // ta fonction existante de rotation 90° antihoraire
+        temp1 = temp2;
+    }
+
+    return temp1;
+}
+
+/*void tourner_n_fois(Piece* piece, int n) {
+    int rotations = n % 4;
+    for (int i = 0; i < rotations; i++) {
+        rotation_piece(piece);
+    }
+}*/
 
 /* void tourner_piece(Piece* piece) {
     char tmp[taille_piece][taille_piece][5];

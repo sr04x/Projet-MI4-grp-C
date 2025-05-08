@@ -23,7 +23,23 @@ void rotation_90_anti_horaire(Piece* piece, Piece* resultat) {
 }
 
 int main() {
-    Piece p;
+    Piece p, r;
+    lire_piece("style_piece/I_piece.txt", &p);
+
+    printf("=== Pièce d'origine ===\n");
+    afficher_piece(&p);
+
+    for (int i = 1; i <= 3; i++) {
+        Piece rot = rotation_piece_multiple(&p, i);
+        printf("=== Rotation %d * 90° antihoraire ===\n", i);
+        afficher_piece(&rot);
+    }
+
+    return 0;
+}
+
+/*int main() {
+    Piece p,r ;
     lire_piece("style_piece/L_piece.txt", &p);
 
     printf("=== Pièce d'origine ===\n");
@@ -35,9 +51,14 @@ int main() {
     printf("=== Pièce après rotation antihoraire ===\n");
     afficher_piece(&p_rot);
 
-    return 0;
-}
+return 0;
+}*/
 
+/*for (int i = 1; i <= 3; i++) {
+    printf("\nRotation %d° :\n", i * 90);
+    tourner_n_fois(&p, 1);
+    afficher_piece(&p);
+}*/
 
 /*#include <stdio.h>
 #include "piece.h"
