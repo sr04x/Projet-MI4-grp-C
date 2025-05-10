@@ -68,14 +68,14 @@ void genererPieceAleatoire(Piece *piece) {
 int collision(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x, int y) {
     for (int i = 0; i < TAILLE_PIECE; i++) {
         for (int j = 0; j < TAILLE_PIECE; j++) {
-            if (strcmp(p->forme[i][j], FOND) != 0) {
-                int gx = x + j;
-                int gy = y + i;
+            if (strcmp(p->forme[i][j], FOND) != 0) { //si la case est différente du fond
+                int gx = x + j -2;
+                int gy = y + i -2;
                 if (gx < 0 || gx >= NB_COLONNES || gy >= NB_LIGNES)
                     return 1;
                 if (gy<0)
                     continue;
-                if (strcmp(grille[gy][gx], FOND) != 0)
+                if (strcmp(grille[gy][gx], FOND ) != 0)
                     return 1;
             }
         }
@@ -84,7 +84,7 @@ int collision(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x, int y) {
 }
 
 
-int choisirColonne() {
+int choisirColonne() { 
     int colonne = choisir_colonne_avec_timer(10); // Sélection avec timer
     do{
         // Validation stricte
@@ -123,8 +123,8 @@ void placer_bloquant(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int y, in
     for (int i = 0; i < TAILLE_PIECE; i++) {
         for (int j = 0; j < TAILLE_PIECE; j++) {
             if (strcmp(p->forme[i][j], FOND) != 0) {
-                int gx = x + j;
-                int gy = y + i;
+                int gx = x + j-2;
+                int gy = y + i-2;
 
                 if (gy >= 0 && gy < NB_LIGNES && gx >= 0 && gx < NB_COLONNES) {
                     strcpy(grille[gy][gx], p->forme[i][j]);
@@ -134,16 +134,18 @@ void placer_bloquant(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int y, in
     }
 }
 
-void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
+int ligneDeChute(char GNES][NB_COLONNES][5], Piece *p, int y, int x))
+
+/*void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
     // 1️⃣ Appliquer la rotation choisie
     if (orientation > 0) {
         *piece = rotation_piece_multiple(piece, orientation);
     }
 
     // 2️⃣ Trouver la ligne la plus basse disponible dans la colonne
-    int ligne = NB_LIGNES - 1;
-    while (ligne >= 0 && strcmp(grille[ligne][colonne], FOND) != 0) {
-        ligne--; // On cherche la première ligne libre
+    int ligne = 0;
+    while (ligne > 10 && strcmp(grille[ligne][colonne], FOND) == 0) {
+        ligne++; // On cherche la première ligne libre
     }
 
     if (ligne < 0) {
@@ -166,8 +168,29 @@ void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, i
     if (lignesSupprimees > 0) {
         printf("🔥 %d lignes supprimées !\n", lignesSupprimees);
     }
-}
+}*/
+void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
+    // Appliquer la rotation
+    if (orientation > 0) {
+        *piece = rotation_piece_multiple(piece, orientation);
+    }
 
+    // Étape 1 : descente automatique
+    int ligne = 0;
+    while (ligne + 1 < NB_LIGNES && !collision(grille, piece, ligne + 1, colonne)) {
+        ligne++;
+    }
+
+    // Étape 2 : vérifier si c’est bloqué dès le début
+    if (ligne == 0 && collision(grille, piece, ligne, colonne)) {
+        printf("❌ GAME OVER ! Une pièce bloque la grille.\n");
+        return;
+    }
+
+    // Étape 3 : placement réel de la pièce
+    placer_bloquant(grille, piece, ligne, colonne);
+    printf("✅ Pièce placée en colonne %c !\n", colonne + 'A');
+}
 
 int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]) {
     for (int j = 0; j < NB_COLONNES; j++) {
@@ -230,6 +253,8 @@ void jouerTetris() {
             gameOver = 1;
             continue;
         }
+
+        while (getchar() != '\n');
 
         // 6️⃣ Gestion des lignes complètes
         score += supprimerLignesCompletes(grille) * 100;
