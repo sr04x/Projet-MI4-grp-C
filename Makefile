@@ -1,16 +1,17 @@
-all: main
+CC = gcc
 
-CC = clang
-override CFLAGS += -g -Wno-everything -pthread -lm
+# Options de compilation
+CFLAGS = -Wall
 
-SRCS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.c' -print)
-HEADERS = $(shell find . -name '.ccls-cache' -type d -prune -o -type f -name '*.h' -print)
+# Fichiers communs à plusieurs cibles
+SRCS = main.c piece.c score.c grille.c timer.c partieee.c
 
-main: $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) $(SRCS) -o "$@"
+# Cible principale : tetris
+tetris: 
+	$(CC) -o tetris $(SRCS) $(CFLAGS)   
 
-main-debug: $(SRCS) $(HEADERS)
-	$(CC) $(CFLAGS) -O0 $(SRCS) -o "$@"
-
-clean:
-	rm -f main main-debug
+    
+# Cible pour nettoyer les fichiers générés 
+clean: 
+	rm -f tetris
+    

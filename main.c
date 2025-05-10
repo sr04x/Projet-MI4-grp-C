@@ -1,9 +1,18 @@
 #include <stdio.h>
 #include <string.h>
-#include "grille.h"
+#include <time.h>
 #include "score.h"
+#include "partie.h"
+#include "grille.h"
+#include "piece.h"
 
-int main() {
+int main(void) {
+    srand(time(NULL));
+    afficherMenuPrincipal();
+    return 0;
+}
+
+/*int main() {
     char nom[NOM_MAX];
     int score = 0;  // Score initialisé à 0
 
@@ -19,7 +28,7 @@ int main() {
     printf("\nBienvenue %s! Prépare-toi à jouer à Tech-tris!\n\n", nom);
     
     //Initialisation et affichage de la grille
-    int grille[NB_LIGNES][NB_COLONNES];
+    char grille[NB_LIGNES][NB_COLONNES][5];
     initialiserGrille(grille);
     afficherGrille(grille);
 
@@ -41,4 +50,4 @@ int main() {
     sauvegarderScore(nom, score);  //Enregistre le score dans scores.txt
     afficherScores();               //Affiche les scores du fichier
     return 0;
-}
+}*/

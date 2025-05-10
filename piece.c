@@ -9,11 +9,8 @@ void lire_piece(char* nom_fichier, Piece* piece) {
         return;
     }
 
-    piece->nom = fgetc(fichier);
-    fgetc(fichier); // saut de ligne après le nom
-
     char ligne[64];
-    for (int i = 0; i < taille_piece; i++) {
+    for (int i = 0; i < TAILLE_PIECE; i++) {
         fgets(ligne, sizeof(ligne), fichier);
 
         // Nettoie le saut de ligne
@@ -23,7 +20,7 @@ void lire_piece(char* nom_fichier, Piece* piece) {
         }
 
         // Maintenant on découpe ligne en blocs de 4 octets (chaque emoji)
-        for (int j = 0; j < taille_piece; j++) {
+        for (int j = 0; j < TAILLE_PIECE; j++) {
             strncpy(piece->forme[i][j], &ligne[j * 4], 4);
             piece->forme[i][j][4] = '\0'; // ajoute le \0 manuellement
         }
@@ -36,8 +33,8 @@ Piece rotation_piece( Piece* piece) {
     Piece result;
 
     // Initialiser toute la matrice de résultat à "."
-    for (int i = 0; i < taille_piece; i++) {
-        for (int j = 0; j < taille_piece; j++) {
+    for (int i = 0; i < TAILLE_PIECE; i++) {
+        for (int j = 0; j < TAILLE_PIECE; j++) {
             strcpy(result.forme[i][j], ".");
         }
     }
@@ -46,8 +43,8 @@ Piece rotation_piece( Piece* piece) {
     strcpy(result.forme[2][2], piece->forme[2][2]);
     
     // Appliquer la rotation anti-horaire autour du centre (2,2)
-    for (int i = 0; i < taille_piece; i++) {
-        for (int j = 0; j < taille_piece; j++) {
+    for (int i = 0; i < TAILLE_PIECE; i++) {
+        for (int j = 0; j < TAILLE_PIECE; j++) {
             if ((i != 2 || j != 2) && strcmp(piece->forme[i][j], ".") != 0) {
                 int di = i - 2;
                 int dj = j - 2;
@@ -77,7 +74,15 @@ Piece rotation_piece_multiple(Piece* piece, int nb_rotations) {
 
     return temp1;
 }
-
+void afficher_piece(Piece* piece) {
+    for (int i = 0; i < TAILLE_PIECE; i++) {
+        for (int j = 0; j < TAILLE_PIECE; j++) {
+            printf("%s", piece->forme[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 /*void tourner_n_fois(Piece* piece, int n) {
     int rotations = n % 4;
     for (int i = 0; i < rotations; i++) {
