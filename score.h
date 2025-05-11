@@ -10,7 +10,7 @@ typedef struct {
 }Score; 
 
 void afficherScores();
-void sauvegarderScore(const char *nom, int score);
+void sauvegarderScore(Score s);
 void afficherMeilleursScores(int topN);
 
 

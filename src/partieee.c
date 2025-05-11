@@ -221,9 +221,14 @@ void jouerTetris() {
 
     }
 
-    // 🎮 Fin de partie : affichage du score
-    printf("\n SCORE FINAL : %d\n", score);
-    sauvegarderScore("Joueur", score);
+    // 🎮 Fin de partie : saisie du nom et sauvegarde du score
+    Score s;
+    printf("Entrez votre nom : ");
+    fgets(s.nom, NOM_MAX, stdin);
+    s.nom[strcspn(s.nom, "\n")] = '\0';  // Enlève le \n final
+    s.score = score;
+    printf("SCORE FINAL : %d", s.score);
+    sauvegarderScore(s);
 
     // 🔄 Proposition de rejouer
     char choix;
@@ -250,7 +255,12 @@ void afficherMenuPrincipal() {
 
         switch (choix) {
             case 1: jouerTetris(); break;
-            case 2: afficherMeilleursScores(5); break;
+            case 2: 
+                afficherMeilleursScores(5);
+                printf(Appuie sur Entree pour revenir au menup principal\n");
+                viderBuffer();
+                
+                break;
             case 3: printf("Au revoir !\n"); break;
             default: printf("Choix invalide.\n");
         }

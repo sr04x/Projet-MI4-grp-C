@@ -45,12 +45,12 @@ void afficherMeilleursScores(int topN) {
 }
 
 
-void sauvegarderScore(const char *nom, int score) {
-    FILE *f = fopen("scores.txt", "a");
+void sauvegarderScore(Score s) {
+    FILE *f = fopen(FICHIERS_SCORES, "a");
     if (f == NULL) {
         perror("Erreur lors de l'ouverture de scores.txt");
         return;
     }
-    fprintf(f, "%s %d\n", nom, score);
+    fprintf(f, "%s %d\n", s.nom, s.score);
     fclose(f);
 }
