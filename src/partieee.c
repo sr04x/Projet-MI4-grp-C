@@ -3,11 +3,17 @@
 #include <string.h>
 #include <time.h>
 
+#include "score.h"
 #include "piece.h"
 #include "grille.h"
-#include "score.h"
 #include "timer.h"
 #include "partieee.h"
+
+
+void viderBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
 
 void afficherJeu(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece) {
     afficherGrille(grille); // Affichage fidèle
@@ -75,6 +81,7 @@ int choisirOrientation() {
     
     demarrer_timer();
     scanf(" %d", &input);
+    viderBuffer();
 
     if (temps_depasse(10)) {
         printf("⏱️ Temps dépassé ! Orientation aléatoire.\n");
@@ -115,10 +122,7 @@ int ligneDeChute(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x) {
 }
 
 void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
-    // Appliquer la rotation
-    if (orientation > 0) {
-        *piece = rotation_piece_multiple(piece, orientation);
-    }
+  
 
     // Étape 1 : descente automatique
     int ligne = 0;
@@ -128,6 +132,7 @@ void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, i
 
     // Étape 2 : vérifier si on a atteint le haut de la grille
     if (ligne==0 && collision(grille, piece, colonne, ligne) && verifierGameOver(grille)) {
+        printf("Erreur: La piece est bloqué en haut. Arret immediat de la partie. ");
         return;
     }
     ligne = ligneDeChute(grille, piece, colonne);
@@ -173,13 +178,18 @@ void jouerTetris() {
         // 3️⃣ Sélection du joueur
         int colonne = choisirColonne();
         int orientation = choisirOrientation();
+
+          // Appliquer la rotation
+        if (orientation > 0) {
+            piece = rotation_piece_multiple(&piece, orientation);
+    }
         
         // Vérification de débordement horizontal
         int depasse = 0;
         for (int i = 0; i < TAILLE_PIECE && !depasse; i++) {
             for (int j = 0; j < TAILLE_PIECE; j++) {
                 if (strcmp(piece.forme[i][j], FOND) != 0) {
-                    int gx = colonne + j;
+                    int gx = colonne + j - TAILLE_PIECE/2; 
                     if (gx < 0 || gx >= NB_COLONNES) {
                         depasse = 1;
                         break;
@@ -193,6 +203,8 @@ void jouerTetris() {
             continue; 
         }
 
+        
+
         // 4️⃣ Placement sécurisé de la pièce
         placer(grille, &piece, colonne, orientation);
         
@@ -202,7 +214,7 @@ void jouerTetris() {
             continue;
         }
 
-        while (getchar() != '\n');
+        viderBuffer();
 
         // 6️⃣ Gestion des lignes complètes
         score += supprimerLignesCompletes(grille) * 100;
@@ -210,14 +222,14 @@ void jouerTetris() {
     }
 
     // 🎮 Fin de partie : affichage du score
-    printf("\n💀 GAME OVER ! Score final : %d\n", score);
+    printf("\n SCORE FINAL : %d\n", score);
     sauvegarderScore("Joueur", score);
 
     // 🔄 Proposition de rejouer
     char choix;
     printf("\nVoulez-vous rejouer ? (O/N) : ");
     scanf(" %c", &choix);
-    while (getchar() != '\n'); // permet entre autre de reinitialiser le timer
+    viderBuffer(); // permet entre autre de reinitialiser le timer
     if (choix == 'O' || choix == 'o') {
         jouerTetris(); // Redémarrer une nouvelle partie
     }
@@ -238,7 +250,7 @@ void afficherMenuPrincipal() {
 
         switch (choix) {
             case 1: jouerTetris(); break;
-            case 2: afficherScores(); break;
+            case 2: afficherMeilleursScores(5); break;
             case 3: printf("Au revoir !\n"); break;
             default: printf("Choix invalide.\n");
         }
