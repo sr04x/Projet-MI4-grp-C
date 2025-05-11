@@ -10,6 +10,8 @@
 #include "partieee.h"
 
 
+// vide le buffer d'entrée (stdin) jusqu'à la fin de ligne '\n' ou fin de fichier (EOF)
+// utile après un scanf pour éviter que le '\n' restant provoque un comportement inattendu plus tard
 void viderBuffer() {
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -29,7 +31,23 @@ void afficherJeu(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece) {
 void genererPieceAleatoire(Piece *piece, int nb_pieces) {
     // 1️⃣ Sélection aléatoire d'une pièce parmi les 7 disponibles
     const char* nomsPieces[] = {"I", "J", "L", "O", "S", "T", "Z"};
-    int index = rand() % nb_pieces;
+    
+    static int historique[2] = {-1, -1};  // Historique des 2 dernières pièces jouées (-1 = vide au départ)
+    //static= garde sa valeur entre les appels
+
+    int index, tentatives = 0;           // index = numéro de la pièce choisie, tentatives = sécurité anti-boucle
+    
+    do {
+        index = rand() % nb_pieces;     // Choisit une pièce au hasard parmi toutes les pièces disponibles
+        tentatives++;                   // Incrémente le nombre d’essais
+        if (tentatives > 20) break;     // Si on boucle trop longtemps (cas rare), on arrête pour éviter les blocages
+    } while (index == historique[0] || index == historique[1]);
+    // On recommence tant que la pièce tirée est identique à l'une des deux dernières
+    
+    // Mettre à jour l’historique en décalant : historique[0] = plus récent, historique[1] = ancien
+    historique[1] = historique[0];
+    historique[0] = index;
+
     piece->nom = nomsPieces[index][0];  // Définir le nom
 
     // 2️⃣ Construire le chemin du fichier
@@ -62,7 +80,7 @@ int collision(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x, int y) {
 
 
 int choisirColonne() { 
-    int colonne = choisir_colonne_avec_timer(30); // Sélection avec timer
+    int colonne = choisir_colonne_avec_timer(20); // Sélection avec timer
     do{
         // Validation stricte
         if (colonne==-1 || colonne < 0 || colonne >= NB_COLONNES) {
@@ -83,7 +101,7 @@ int choisirOrientation() {
     scanf(" %d", &input);
     viderBuffer();
 
-    if (temps_depasse(10)) {
+    if (temps_depasse(20)) {
         printf("⏱️ Temps dépassé ! Orientation aléatoire.\n");
         return rand() % 4;
     }
@@ -101,10 +119,10 @@ void placer_bloquant(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int y, in
     for (int i = 0; i < TAILLE_PIECE; i++) {
         for (int j = 0; j < TAILLE_PIECE; j++) {
             if (strcmp(p->forme[i][j], FOND) != 0) {
-                int gx = x + j-2;
+                int gx = x + j-2; // -2 => pour centrer la piece
                 int gy = y + i-2;
 
-                if (gy >= 0 && gy < NB_LIGNES && gx >= 0 && gx < NB_COLONNES) {
+                if (gy >= 0 && gy < NB_LIGNES && gx >= 0 && gx < NB_COLONNES) { // verifie si on sort pas de la grille
                     strcpy(grille[gy][gx], p->forme[i][j]);
                 }
             }
@@ -113,7 +131,7 @@ void placer_bloquant(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int y, in
 }
 
 
-int ligneDeChute(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x) {
+int ligneDeChute(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x) { // determine jusqu'ou une piece peut tomber dans la grille sans collision
     int y = 0;
     while (y < NB_LIGNES && collision(grille, p, x, y) == 0) {
         y++;
@@ -141,7 +159,7 @@ int placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, in
     placer_bloquant(grille, piece, ligne, colonne);
     printf("✅ Pièce placée en colonne %c !\n", colonne + 'A');
 
-    // 5️⃣ Vérifier les lignes complètes après placement
+    // Étape 4 : Vérifier les lignes complètes après placement
     int lignesSupprimees = supprimerLignesCompletes(grille);
     if (lignesSupprimees > 0) {
         printf("🔥 %d ligne(s) supprimée(s) !\n", lignesSupprimees);

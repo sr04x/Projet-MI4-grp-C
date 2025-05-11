@@ -13,12 +13,12 @@ void initialiserGrille(char grille[NB_LIGNES][NB_COLONNES][5]) {
 void afficherGrille(char grille[NB_LIGNES][NB_COLONNES][5]) {
     printf("Voici votre grille :\n  ");
     printf(" ");
-    for (int col = 0; col < NB_COLONNES; col++) {
+    for (int col = 0; col < NB_COLONNES; col++) {   //affichage de l'en-tête
         printf("%c ", 'A' + col);
     }
     printf(" :\n");
 
-    for (int i = 0; i < NB_LIGNES; i++) {
+    for (int i = 0; i < NB_LIGNES; i++) {   //affichage de la grille
         printf("  ");
         for (int j = 0; j < NB_COLONNES; j++) {
             printf("%s", grille[i][j]);
@@ -33,7 +33,7 @@ int supprimerLignesCompletes(char grille[NB_LIGNES][NB_COLONNES][5]) {
 
     // Parcours de la grille de bas en haut (i = ligne)
     for (int i = NB_LIGNES - 1; i >= 0; i--) {
-        int lignePleine = 1;  // Hypothèse : la ligne est pleine
+        int lignePleine = 1;  // La ligne est pleine
 
         // Vérifie chaque case de la ligne i
         for (int j = 0; j < NB_COLONNES; j++) {

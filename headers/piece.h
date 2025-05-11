@@ -25,5 +25,3 @@ Piece rotation_90_antihoraire(Piece* original, Piece* resultat);
 Piece rotation_piece_multiple(Piece* piece, int nb_rotations);
 
 void afficherToutesLesOrientations(Piece *piece);
-/*void tourner_piece(Piece* piece);
-void tourner_n_fois(Piece* piece, int n);*/

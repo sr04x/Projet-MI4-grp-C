@@ -13,7 +13,7 @@
 int main() {
     int nb_pieces;
     srand(time(NULL));
-    char saisie[100];                   // Buffer pour lire la saisie de l'utilisateur sous forme de chaîne
+    char saisie[100];  // Buffer pour lire la saisie de l'utilisateur sous forme de chaîne
 
     do {
         // Affiche une question claire et explicite à l'utilisateur
@@ -26,7 +26,7 @@ int main() {
             exit(1);
         }
     
-        // Analyse la chaîne : sscanf extrait un entier dans NB_USER si possible
+        // Analyse la chaîne : sscanf extrait un entier dans nb_pieces si possible
         // Si la saisie n’est pas un nombre, ou si elle est hors intervalle, on affiche une erreur
         if (sscanf(saisie, "%d", &nb_pieces) != 1 || nb_pieces < 3 || nb_pieces > 7) {
             printf("Entrée invalide. Veuillez saisir un nombre entre 3 et 7.\n");
