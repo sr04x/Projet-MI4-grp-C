@@ -234,10 +234,10 @@ void jouerTetris(int nb_pieces) {
     scanf(" %c", &choix);
     viderBuffer(); // permet entre autre de reinitialiser le timer
     if (choix == 'O' || choix == 'o') {
-        jouerTetris(); // Redémarrer une nouvelle partie
+        jouerTetris(nb_pieces); // Redémarrer une nouvelle partie
     }
     else if (choix == 'N' || choix == 'n') {
-        afficherMenuPrincipal(); // 
+        afficherMenuPrincipal(nb_pieces); // 
     }
 }
 
