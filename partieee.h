@@ -5,7 +5,7 @@ void viderBuffer();
 
 void afficherJeu(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece);
 
-void genererPieceAleatoire(Piece *piece);
+void genererPieceAleatoire(Piece *piece, int nb_pieces);
 
 int choisirColonne();
 
@@ -17,8 +17,8 @@ int placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, in
 
 int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]);
 
-void jouerTetris();
+void jouerTetris(int nb_pieces);
 
-void afficherMenuPrincipal();
+void afficherMenuPrincipal(int nb_pieces);
 
 #endif // PARTIE_H

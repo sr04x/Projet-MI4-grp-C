@@ -26,10 +26,10 @@ void afficherJeu(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece) {
 }
 
 
-void genererPieceAleatoire(Piece *piece) {
+void genererPieceAleatoire(Piece *piece, int nb_pieces) {
     // 1️⃣ Sélection aléatoire d'une pièce parmi les 7 disponibles
     const char* nomsPieces[] = {"I", "J", "L", "O", "S", "T", "Z"};
-    int index = rand() % 7;
+    int index = rand() % nb_pieces;
     piece->nom = nomsPieces[index][0];  // Définir le nom
 
     // 2️⃣ Construire le chemin du fichier
@@ -133,7 +133,7 @@ int placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, in
     // Étape 2 : vérifier si on a atteint le haut de la grille
     if (ligne==0 && collision(grille, piece, colonne, ligne) && verifierGameOver(grille)) {
         printf("Erreur: La piece est bloqué en haut. Arret immediat de la partie. ");
-        return;
+        return 0;
     }
     ligne = ligneDeChute(grille, piece, colonne);
 
@@ -160,7 +160,7 @@ int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]) {
 }
 
 
-void jouerTetris() {
+void jouerTetris(int nb_pieces) {
     char grille[NB_LIGNES][NB_COLONNES][5];
     initialiserGrille(grille);
     
@@ -170,7 +170,7 @@ void jouerTetris() {
     while (!gameOver) {
         // 1️⃣ Générer une nouvelle pièce
         Piece piece;
-        genererPieceAleatoire(&piece);
+        genererPieceAleatoire(&piece, nb_pieces);
         
 
         // 2️⃣ Afficher la grille, la pièce et ses orientations
@@ -207,18 +207,15 @@ void jouerTetris() {
         
 
         // 4️⃣ Placement sécurisé de la pièce
-        placer(grille, &piece, colonne, orientation);
-        
+        int lignesSupprimees = placer(grille, &piece, colonne, orientation);
+        score += lignesSupprimees * 100;
+        printf("DEBUG : %d ligne(s) supprimée(s), score = %d\n", lignesSupprimees, score);
+
         // 5️⃣ Vérification du Game Over
         if (verifierGameOver(grille)){
             gameOver = 1;
             continue;
         }
-
-        // 6️⃣ Gestion des lignes complètes
-        int lignesSupprimees = placer(grille, &piece, colonne, orientation);
-        score += lignesSupprimees * 100;
-        printf("DEBUG : %d ligne(s) supprimée(s), score = %d\n", lignesSupprimees, score);
 
     }
 
@@ -245,7 +242,7 @@ void jouerTetris() {
 }
 
 /// Affiche le menu principal et gère les choix
-void afficherMenuPrincipal() {
+void afficherMenuPrincipal(int nb_pieces) {
     int choix;
     int resultat;
     do {
@@ -261,9 +258,13 @@ void afficherMenuPrincipal() {
         }
     
         switch (choix) {
-            case 1: jouerTetris(); break;
+            case 1: jouerTetris(nb_pieces); break;
             case 2: afficherMeilleursScores(5); break;
-            case 3: printf("Au revoir !\n"); break;
+            case 3: 
+                FILE*f = fopen(FICHIERS_SCORES, "w");
+                if (f != NULL) fclose(f);
+                printf("Au revoir !\n"); 
+                break;
             default: printf("Choix invalide.\n");
         }
     
@@ -271,7 +272,3 @@ void afficherMenuPrincipal() {
     return;
 }
 
-/// Lance une nouvelle partie
-void nouvellePartie() {
-    jouerTetris();
-}
