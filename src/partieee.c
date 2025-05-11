@@ -121,7 +121,7 @@ int ligneDeChute(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x) {
     return y - 1;  // on retourne la dernière position valide
 }
 
-void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
+int placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
   
 
     // Étape 1 : descente automatique
@@ -144,8 +144,9 @@ void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, i
     // 5️⃣ Vérifier les lignes complètes après placement
     int lignesSupprimees = supprimerLignesCompletes(grille);
     if (lignesSupprimees > 0) {
-        printf("🔥 %d lignes supprimées !\n", lignesSupprimees);
+        printf("🔥 %d ligne(s) supprimée(s) !\n", lignesSupprimees);
     }
+    return lignesSupprimees;
 }
 
 int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]) {
@@ -214,10 +215,10 @@ void jouerTetris() {
             continue;
         }
 
-        viderBuffer();
-
         // 6️⃣ Gestion des lignes complètes
-        score += supprimerLignesCompletes(grille) * 100;
+        int lignesSupprimees = placer(grille, &piece, colonne, orientation);
+        score += lignesSupprimees * 100;
+        printf("DEBUG : %d ligne(s) supprimée(s), score = %d\n", lignesSupprimees, score);
 
     }
 

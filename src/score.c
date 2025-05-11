@@ -46,11 +46,12 @@ void sauvegarderScore(Score s) {
         fclose(f);
     }
 
-    // Aiout du nouveau score en dernière position (priorité à l'entrée la plus récente en cas d'égalité)
-        scores[n++] = s; // s= nouveau score à aiouter
+    // Aiout du nouveau score en dernière position 
+   
+    scores[n++] = s; // s= nouveau score à aiouter
+ 
 
-
-    // Tri décroissant avec priorité au plus récent en cas d'égalité 
+    // Tri décroissant 
     for (int i = n - 1; i > 0; i--) {
         if (scores[i].score < scores[i - 1].score) {
             Score temp = scores[i];

@@ -13,7 +13,7 @@ int collision(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x, int y);
 
 int choisirOrientation();
 
-void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation);
+int placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation);
 
 int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]);
 
