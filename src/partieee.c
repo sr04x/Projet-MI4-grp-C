@@ -62,7 +62,7 @@ int collision(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x, int y) {
 
 
 int choisirColonne() { 
-    int colonne = choisir_colonne_avec_timer(10); // Sélection avec timer
+    int colonne = choisir_colonne_avec_timer(30); // Sélection avec timer
     do{
         // Validation stricte
         if (colonne==-1 || colonne < 0 || colonne >= NB_COLONNES) {
@@ -246,25 +246,28 @@ void jouerTetris() {
 /// Affiche le menu principal et gère les choix
 void afficherMenuPrincipal() {
     int choix;
+    int resultat;
     do {
         printf("\n=== TETRIS ===\n");
         printf("1. Nouvelle partie\n2. Voir scores\n3. Quitter\nVotre choix : ");
-
-        if (scanf("%d", &choix) != 1) choix = 3;
-        while (getchar() != '\n');  // Nettoyage du buffer
-
+        
+        resultat = scanf("%d", &choix);
+        viderBuffer();
+    
+        if (resultat != 1) {
+            printf("Choix invalide. Veuillez entrer un chiffre entre 1 et 3.\n");
+            choix = 0; // valeur par défaut
+        }
+    
         switch (choix) {
             case 1: jouerTetris(); break;
-            case 2: 
-                afficherMeilleursScores(5);
-                printf(Appuie sur Entree pour revenir au menup principal\n");
-                viderBuffer();
-                
-                break;
+            case 2: afficherMeilleursScores(5); break;
             case 3: printf("Au revoir !\n"); break;
             default: printf("Choix invalide.\n");
         }
+    
     } while (choix != 3);
+    return;
 }
 
 /// Lance une nouvelle partie

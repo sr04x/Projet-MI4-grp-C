@@ -17,24 +17,12 @@ void afficherMeilleursScores(int topN) {
     Score scores[MAX_SCORES];  // Tableau pour stocker les scores chargés depuis le fichier
     int n = 0; // Compteur du nombre de scores réellement lus
 
-    // Lecture des scores dans le fichier (nom + score), jusqu'à MAX_SCORES
+    // Lecture des scores dans le fichier (nom + score), iusqu'à MAX_SCORES
     while (n < MAX_SCORES && fscanf(f, "%49s %d", scores[n].nom, &scores[n].score) == 2) {
         n++;
     }
 
     fclose(f);  // On ferme le fichier après lecture, c'est plus propre
-
-    // Tri des scores en ordre décroissant (plus grand score en premier)
-    for (int i = 0; i < n - 1; i++) {
-        for (int j = i + 1; j < n; j++) {
-            if (scores[j].score > scores[i].score) {
-                // Échange des deux structures Score si l’ordre n’est pas bon
-                Score tmp = scores[i];
-                scores[i] = scores[j];
-                scores[j] = tmp;
-            }
-        }
-    }
 
     // Affichage propre des scores, limité au topN demandé
     printf("\n--- Meilleurs scores (Top %d) ---\n", topN);
@@ -46,11 +34,38 @@ void afficherMeilleursScores(int topN) {
 
 
 void sauvegarderScore(Score s) {
-    FILE *f = fopen(FICHIERS_SCORES, "a");
-    if (f == NULL) {
-        perror("Erreur lors de l'ouverture de scores.txt");
-        return;
+    Score scores[MAX_SCORES];
+    int n = 0; //nb de scores lus depuis le fichier
+
+    // Lecture des scores existants
+    FILE *f = fopen(FICHIERS_SCORES, "r");
+    if (f != NULL) {
+        while (n < MAX_SCORES && fscanf(f, "%49s %d", scores[n].nom, &scores[n].score) == 2) {
+            n++;
+        }
+        fclose(f);
     }
-    fprintf(f, "%s %d\n", s.nom, s.score);
-    fclose(f);
+
+    // Aiout du nouveau score en dernière position (priorité à l'entrée la plus récente en cas d'égalité)
+        scores[n++] = s; // s= nouveau score à aiouter
+
+
+    // Tri décroissant avec priorité au plus récent en cas d'égalité 
+    for (int i = n - 1; i > 0; i--) {
+        if (scores[i].score < scores[i - 1].score) {
+            Score temp = scores[i];
+            scores[i] = scores[i - 1];
+            scores[i - 1] = temp;
+        }
+    }
+
+
+    // Réécriture du fichier (propre)
+    f = fopen(FICHIERS_SCORES, "w");
+    if (f != NULL) {
+        for (int i = 0; i < n; i++) {
+            fprintf(f, "%s %d\n", scores[i].nom, scores[i].score);
+        }
+        fclose(f);
+    }
 }
