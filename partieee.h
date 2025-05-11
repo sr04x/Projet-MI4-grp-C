@@ -13,8 +13,8 @@ void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, i
 
 int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]);
 
-void boucleDeJeu();
-
 void jouerTetris();
+
+void afficherMenuPrincipal();
 
 #endif // PARTIE_H

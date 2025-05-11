@@ -3,7 +3,6 @@
 #include <string.h>
 #include <time.h>
 
-#include <unistd.h>  // sleep()
 #include "piece.h"
 #include "grille.h"
 #include "score.h"
@@ -17,10 +16,7 @@ void afficherJeu(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece) {
     afficher_piece(piece); // Afficher la pièce avant la sélection
 
     printf("\n🌀 Orientations possibles :\n");
-    printf("0️⃣ : Aucun changement\n");
-    printf("1️⃣ : Rotation 90° antihoraire\n");
-    printf("2️⃣ : Rotation 180°\n");
-    printf("3️⃣ : Rotation 270° antihoraire\n");// il faut qu'il affiche les pieces
+    afficherToutesLesOrientations(piece);
 }
 
 
@@ -34,49 +30,24 @@ void genererPieceAleatoire(Piece *piece) {
     char cheminFichier[64];
     snprintf(cheminFichier, sizeof(cheminFichier), "style_piece/%s_piece.txt", nomsPieces[index]);
 
-    // 3️⃣ Lire le fichier correspondant
-    FILE *fichier = fopen(cheminFichier, "r");
-    if (!fichier) {
-        printf("❌ Erreur : Impossible de lire le fichier %s\n", cheminFichier);
-        return;
-    }
-
-    // 4️⃣ Stocker la forme dans la structure
-    char ligne[64];
-    for (int i = 0; i < TAILLE_PIECE; i++) {
-        fgets(ligne, sizeof(ligne), fichier);
-
-        // Nettoie le saut de ligne
-        int len = strlen(ligne);
-        if (len > 0 && ligne[len - 1] == '\n') {
-            ligne[len - 1] = '\0';
-        }
-
-        // Maintenant on découpe ligne en blocs de 4 octets (chaque emoji)
-        for (int j = 0; j < TAILLE_PIECE; j++) {
-            strncpy(piece->forme[i][j], &ligne[j * 4], 4);
-            piece->forme[i][j][4] = '\0'; // ajoute le \0 manuellement
-        }
-    }
-
-    fclose(fichier);
+    lire_piece(cheminFichier, piece);
 
     printf("✅ Pièce générée : %c\n", piece->nom);
 }
 
-/// Vérifie si la pièce `p` entre en collision avec la grille à la position `(x, y)`
+/// Vérifie si la pièce `p` entre en collision avec la grille à la position `(x, y)` detecter à partir du moment ou ya piece 
 int collision(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x, int y) {
     for (int i = 0; i < TAILLE_PIECE; i++) {
         for (int j = 0; j < TAILLE_PIECE; j++) {
             if (strcmp(p->forme[i][j], FOND) != 0) { //si la case est différente du fond
                 int gx = x + j -2;
                 int gy = y + i -2;
-                if (gx < 0 || gx >= NB_COLONNES || gy >= NB_LIGNES)
+                if (gx < 0 || gx >= NB_COLONNES || gy >= NB_LIGNES)// on arrive en haut de la grille??
                     return 1;
                 if (gy<0)
                     continue;
-                if (strcmp(grille[gy][gx], FOND ) != 0)
-                    return 1;
+                if (strcmp(grille[gy][gx], FOND ) != 0) //si case grille != fond, collision
+                    return 2;
             }
         }
     }
@@ -134,41 +105,15 @@ void placer_bloquant(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int y, in
     }
 }
 
-int ligneDeChute(char GNES][NB_COLONNES][5], Piece *p, int y, int x))
 
-/*void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
-    // 1️⃣ Appliquer la rotation choisie
-    if (orientation > 0) {
-        *piece = rotation_piece_multiple(piece, orientation);
+int ligneDeChute(char grille[NB_LIGNES][NB_COLONNES][5], Piece *p, int x) {
+    int y = 0;
+    while (y < NB_LIGNES && collision(grille, p, x, y) == 0) {
+        y++;
     }
+    return y - 1;  // on retourne la dernière position valide
+}
 
-    // 2️⃣ Trouver la ligne la plus basse disponible dans la colonne
-    int ligne = 0;
-    while (ligne > 10 && strcmp(grille[ligne][colonne], FOND) == 0) {
-        ligne++; // On cherche la première ligne libre
-    }
-
-    if (ligne < 0) {
-        printf("❌ Impossible de placer la pièce ici ! Game Over imminent...\n");
-        return; // La colonne est pleine, la pièce ne peut pas être placée
-    }
-
-    // 3️⃣ Vérifier la collision avant de placer
-    if (collision(grille, piece, ligne, colonne)) {
-        printf("❌ Collision détectée ! Placement annulé.\n");
-        return;
-    }
-
-    // 4️⃣ Insérer la pièce
-    placer_bloquant(grille, piece, ligne, colonne);
-    printf("✅ Pièce placée en colonne %c !\n", 'A' + colonne);
-
-    // 5️⃣ Vérifier les lignes complètes après placement
-    int lignesSupprimees = supprimerLignesCompletes(grille);
-    if (lignesSupprimees > 0) {
-        printf("🔥 %d lignes supprimées !\n", lignesSupprimees);
-    }
-}*/
 void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, int orientation) {
     // Appliquer la rotation
     if (orientation > 0) {
@@ -177,19 +122,25 @@ void placer(char grille[NB_LIGNES][NB_COLONNES][5], Piece *piece, int colonne, i
 
     // Étape 1 : descente automatique
     int ligne = 0;
-    while (ligne + 1 < NB_LIGNES && !collision(grille, piece, ligne + 1, colonne)) {
-        ligne++;
+    while (ligne + 1 < NB_LIGNES && collision(grille, piece, colonne, ligne + 1)!=1) {
+        ligne++; // ligne=9                   //erreur avec collision
     }
 
-    // Étape 2 : vérifier si c’est bloqué dès le début
-    if (ligne == 0 && collision(grille, piece, ligne, colonne)) {
-        printf("❌ GAME OVER ! Une pièce bloque la grille.\n");
+    // Étape 2 : vérifier si on a atteint le haut de la grille
+    if (ligne==0 && collision(grille, piece, colonne, ligne) && verifierGameOver(grille)) {
         return;
     }
+    ligne = ligneDeChute(grille, piece, colonne);
 
     // Étape 3 : placement réel de la pièce
     placer_bloquant(grille, piece, ligne, colonne);
     printf("✅ Pièce placée en colonne %c !\n", colonne + 'A');
+
+    // 5️⃣ Vérifier les lignes complètes après placement
+    int lignesSupprimees = supprimerLignesCompletes(grille);
+    if (lignesSupprimees > 0) {
+        printf("🔥 %d lignes supprimées !\n", lignesSupprimees);
+    }
 }
 
 int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]) {
@@ -201,30 +152,7 @@ int verifierGameOver(char grille[NB_LIGNES][NB_COLONNES][5]) {
     }
     return 0;
 }
-void boucleDeJeu() {
-    char grille[NB_LIGNES][NB_COLONNES][5];
-    initialiserGrille(grille);
-    int gameOver = 0;
 
-    while (!gameOver) {
-        // 1️⃣ Affichage de la grille et de la pièce
-        Piece piece;
-        genererPieceAleatoire(&piece);
-        afficherJeu(grille, &piece);
-
-        // 2️⃣ Sélection de la colonne et de l’orientation
-        int colonne = choisirColonne();
-        int orientation = choisirOrientation();
-
-        // 3️⃣ Placement de la pièce
-        placer(grille, &piece, colonne, orientation);
-
-        // 4️⃣ Vérification du Game Over
-        gameOver = verifierGameOver(grille);
-    }
-
-    printf("\n💀 Fin de la partie ! Merci d'avoir joué.\n");
-}
 
 void jouerTetris() {
     char grille[NB_LIGNES][NB_COLONNES][5];
@@ -237,13 +165,33 @@ void jouerTetris() {
         // 1️⃣ Générer une nouvelle pièce
         Piece piece;
         genererPieceAleatoire(&piece);
+        
 
-        // 2️⃣ Afficher la grille et la pièce
+        // 2️⃣ Afficher la grille, la pièce et ses orientations
         afficherJeu(grille, &piece);
 
         // 3️⃣ Sélection du joueur
         int colonne = choisirColonne();
         int orientation = choisirOrientation();
+        
+        // Vérification de débordement horizontal
+        int depasse = 0;
+        for (int i = 0; i < TAILLE_PIECE && !depasse; i++) {
+            for (int j = 0; j < TAILLE_PIECE; j++) {
+                if (strcmp(piece.forme[i][j], FOND) != 0) {
+                    int gx = colonne + j;
+                    if (gx < 0 || gx >= NB_COLONNES) {
+                        depasse = 1;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (depasse) {
+            printf("❌ Erreur : la pièce déborde horizontalement. Veuillez choisir une autre colonne.\n");
+            continue; 
+        }
 
         // 4️⃣ Placement sécurisé de la pièce
         placer(grille, &piece, colonne, orientation);
@@ -273,10 +221,13 @@ void jouerTetris() {
     if (choix == 'O' || choix == 'o') {
         jouerTetris(); // Redémarrer une nouvelle partie
     }
+    else if (choix == 'N' || choix == 'n') {
+        afficherMenuPrincipal(); // 
+    }
 }
 
 /// Affiche le menu principal et gère les choix
-void afficherMenuPrincipal(void) {
+void afficherMenuPrincipal() {
     int choix;
     do {
         printf("\n=== TETRIS ===\n");
@@ -296,5 +247,5 @@ void afficherMenuPrincipal(void) {
 
 /// Lance une nouvelle partie
 void nouvellePartie() {
-    boucleDeJeu();
+    jouerTetris();
 }

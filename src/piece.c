@@ -83,6 +83,45 @@ void afficher_piece(Piece* piece) {
     }
     printf("\n");
 }
+
+void afficherToutesLesOrientations(Piece *piece) {
+    printf("\nVoici les orientations possibles :\n\n");
+
+    // Pour chaque ligne (0 à 4) à afficher
+    for (int ligne = 0; ligne < TAILLE_PIECE; ligne++) {
+
+        // Pour chaque orientation de 0 à 3
+        for (int ori = 0; ori < 4; ori++) {
+
+            // On génère la pièce temporaire dans l'orientation courante
+            Piece temp = rotation_piece_multiple(piece, ori);
+
+            printf("  "); // Petite marge avant chaque bloc de pièce
+
+            // On affiche la ligne `ligne` de cette orientation
+            for (int col = 0; col < TAILLE_PIECE; col++) {
+                printf("%s", temp.forme[ligne][col]);
+            }
+
+            printf("   "); // Espace entre chaque orientation
+        }
+
+        // Une fois les 4 orientations affichées côte à côte sur la ligne, on passe à la suivante
+        printf("\n");
+    }
+
+    // Saut de ligne pour séparer visuellement
+    printf("\n");
+
+    // Affichage des indices 0 à 3 en-dessous, bien alignés
+    for (int ori = 0; ori < 4; ori++) {
+        printf("    %d         ", ori); // alignement visuel
+    }
+
+    printf("\n\n"); // Finition propre
+}
+
+
 /*void tourner_n_fois(Piece* piece, int n) {
     int rotations = n % 4;
     for (int i = 0; i < rotations; i++) {

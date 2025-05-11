@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
-#include "score.h"
-#include "partie.h"
-#include "grille.h"
+
 #include "piece.h"
+#include "grille.h"
+#include "score.h"
+#include "timer.h"
+#include "partieee.h"
+
 
 int main(void) {
     srand(time(NULL));

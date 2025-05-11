@@ -1,17 +1,17 @@
+# Compilateur
 CC = gcc
 
 # Options de compilation
-CFLAGS = -Wall
+CFLAGS = -Wall -Isrc -I.  # <--- on ajoute -I. pour chercher les .h à la racine
 
-# Fichiers communs à plusieurs cibles
-SRCS = main.c piece.c score.c grille.c timer.c partieee.c
+# Tous les fichiers .c dans src/
+SRCS = $(wildcard src/*.c)
 
-# Cible principale : tetris
-tetris: 
-	$(CC) -o tetris $(SRCS) $(CFLAGS)   
+# Cible principale
+tetris:
+	$(CC) -o tetris $(SRCS) $(CFLAGS)
 
-    
-# Cible pour nettoyer les fichiers générés 
-clean: 
+# Nettoyage
+clean:
 	rm -f tetris
     
